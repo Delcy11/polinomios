@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuestionario de Polin&oacute;mios</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h2 {
+      color: #005f73;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+    button {
+      background-color: #0a9396;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005f73;
+    }
+    #temporizador {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="registro">
+    <h2>Registro de Participante</h2>
+    <input type="text" id="nombre" placeholder="Ingresa tu nombre" required>
+    <button onClick="iniciarCuestionario()">&iexcl;Comenzar!</button>
+  </div>
+
+  <div id="cuestionario" style="display:none;">
+    <h2>Cuestionario de Suma de Polin&oacute;mios</h2>
+    <div id="temporizador">Tiempo restante: <span id="tiempo">90</span> segundos</div>
+    <form id="formulario">
+      <div>
+        <p>1. &iquest;Cu&aacute;l es la suma de 3x<sup>2</sup> + 2x y 5x<sup>2</sup> + 4x?</p>
+        <label><input type="radio" name="q1" value="a"> 8x<sup>2</sup> + 6x</label><br>
+        <label><input type="radio" name="q1" value="b"> 15x<sup>2</sup> + 8x</label><br>
+        <label><input type="radio" name="q1" value="c"> 8x + 7x<sup>2</sup></label>
+      </div>
+      <div>
+        <p>2. &iquest;Cu&aacute;l es la suma de (2x<sup>3</sup> + x - 5) + (4x<sup>3</sup> - 3x + 2)?</p>
+        <label><input type="radio" name="q2" value="a"> 6x<sup>3</sup> - 2x - 3</label><br>
+        <label><input type="radio" name="q2" value="b"> 6x<sup>3</sup> + 4x - 7</label><br>
+        <label><input type="radio" name="q2" value="c"> 6x<sup>3</sup> - 2x - 7</label>
+      </div>
+      <div>
+        <p>3. &iquest;Cu&aacute;l es el resultado de (x<sup>2</sup> - 3x + 2) + (-x<sup>2</sup> + 5x - 4)?</p>
+        <label><input type="radio" name="q3" value="a"> 2x - 2</label><br>
+        <label><input type="radio" name="q3" value="b"> -2x + 6</label><br>
+        <label><input type="radio" name="q3" value="c"> 2x + -2</label>
+      </div>
+      <div>
+        <p>4. &iquest;Cu&aacute;l es la suma de (7x - 4) + (3x + 9)?</p>
+        <label><input type="radio" name="q4" value="a"> 10x + 5</label><br>
+        <label><input type="radio" name="q4" value="b"> 10x - 13</label><br>
+        <label><input type="radio" name="q4" value="c"> 4x + 13</label>
+      </div>
+      <div>
+        <p>5. &iquest;Cu&aacute;l es la suma de (-2x<sup>2</sup> + 6x - 1) + (3x<sup>2</sup> - x + 4)?</p>
+        <label><input type="radio" name="q5" value="a"> x<sup>2</sup> + 5x + 3</label><br>
+        <label><input type="radio" name="q5" value="b"> x<sup>2</sup> - 7x + 5</label><br>
+        <label><input type="radio" name="q5" value="c"> 5x<sup>2</sup> + 5x + 3</label>
+      </div>
+    </form>
+    <button onClick="enviarRespuestas()">&iexcl;Enviar!</button>
+  </div>
+
+  <div id="resultado" style="display:none;">
+    <h2>Resultado del Cuestionario</h2>
+    <p><strong>Participante:</strong> <span id="nombreParticipante"></span></p>
+    <table>
+      <thead>
+        <tr><th>Pregunta</th><th>Tu Respuesta</th><th>Correcta</th></tr>
+      </thead>
+      <tbody id="tablaResultados"></tbody>
+    </table>
+    <p><strong>Puntaje:</strong> <span id="puntajeFinal"></span>/5</p>
+  </div>
+
+  <script>
+    const respuestasCorrectas = ['a', 'a', 'c', 'a', 'a'];
+    let tiempoRestante = 90;
+    let temporizador;
+
+    function iniciarCuestionario() {
+      const nombre = document.getElementById('nombre').value.trim();
+      if (!nombre) {
+        alert('�Por favor, ingresa tu nombre!');
+        return;
+      }
+      document.getElementById('registro').style.display = 'none';
+      document.getElementById('cuestionario').style.display = 'block';
+      temporizador = setInterval(actualizarTiempo, 1000);
+    }
+
+    function actualizarTiempo() {
+      tiempoRestante--;
+      document.getElementById('tiempo').textContent = tiempoRestante;
+      if (tiempoRestante <= 0) {
+        clearInterval(temporizador);
+        enviarRespuestas();
+      }
+    }
+
+    function enviarRespuestas() {
+      clearInterval(temporizador);
+      document.getElementById('cuestionario').style.display = 'none';
+      document.getElementById('resultado').style.display = 'block';
+
+      const nombre = document.getElementById('nombre').value;
+      document.getElementById('nombreParticipante').textContent = nombre;
+
+      let puntaje = 0;
+      const tabla = document.getElementById('tablaResultados');
+      tabla.innerHTML = '';
+
+      for (let i = 1; i <= 5; i++) {
+        const respuestaUsuario = document.querySelector(`input[name="q${i}"]:checked`);
+        const valor = respuestaUsuario ? respuestaUsuario.value : 'No respondida';
+        const correcta = respuestasCorrectas[i - 1];
+
+        if (valor === correcta) puntaje++;
+
+        const fila = `<tr>
+          <td>${i}</td>
+          <td>${valor}</td>
+          <td>${correcta}</td>
+        </tr>`;
+        tabla.innerHTML += fila;
+      }
+
+      document.getElementById('puntajeFinal').textContent = puntaje;
+    }
+  </script>
+</body>
+</html>
